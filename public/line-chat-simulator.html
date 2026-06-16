@@ -54,8 +54,13 @@ body{
 }
 .chat-name-input::placeholder{color:rgba(255,255,255,.6)}
 .hdr-sub{font-size:11px;opacity:.85;margin-top:1px}
-.hdr-actions{display:flex;gap:8px}
-.hdr-actions button{background:none;border:none;color:#fff;font-size:19px;cursor:pointer;padding:4px}
+.hdr-actions{display:flex;gap:4px;align-items:center}
+.hdr-actions button{background:none;border:none;color:#fff;font-size:19px;cursor:pointer;padding:5px;line-height:1}
+.hdr-cal{
+  background:rgba(255,255,255,.18)!important;color:#fff!important;
+  font-size:11px!important;font-weight:700!important;padding:3px 6px!important;
+  border-radius:5px!important;line-height:1.2!important;min-width:22px;text-align:center;
+}
 /* Chat area */
 .chat-area{
   flex:1;overflow-y:auto;padding:10px 8px;
@@ -152,22 +157,30 @@ body{
 .input-row{display:flex;align-items:flex-end;gap:5px;margin-top:4px}
 .ib{
   background:none;border:none;font-size:22px;padding:6px;
-  cursor:pointer;color:#666;border-radius:8px;flex-shrink:0;
-  transition:background .1s;
+  cursor:pointer;color:#777;border-radius:8px;flex-shrink:0;
+  transition:background .1s;display:flex;align-items:center;justify-content:center;
 }
-.ib:hover,.ib:active{background:var(--gray)}
+.ib:hover,.ib:active{background:var(--gray);color:#555}
+.ib-plus{
+  font-size:26px;font-weight:300;color:#555;width:36px;height:36px;
+  border-radius:50%;border:2px solid #bbb!important;
+  background:none!important;padding:0!important;line-height:1;
+}
+.ib-mic svg,.ib-cam svg{display:block}
 .msg-input{
-  flex:1;border:1px solid #ddd;border-radius:20px;padding:8px 14px;
+  flex:1;border:none;border-radius:20px;padding:8px 12px;
   font-size:15px;outline:none;resize:none;overflow-y:hidden;
   background:#fff;font-family:inherit;line-height:1.4;max-height:100px;
+  box-shadow:0 0 0 1px rgba(0,0,0,.08);
 }
-.msg-input:focus{border-color:var(--green)}
+.msg-input:focus{box-shadow:0 0 0 1.5px var(--green)}
 .send-btn{
-  width:40px;height:40px;border-radius:50%;background:var(--green);
-  border:none;color:#fff;font-size:20px;cursor:pointer;
+  width:38px;height:38px;border-radius:50%;background:var(--green);
+  border:none;color:#fff;cursor:pointer;
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:transform .1s,background .1s;
 }
-.send-btn:hover,.send-btn:active{background:var(--green-dk);transform:scale(.95)}
+.send-btn:hover,.send-btn:active{background:var(--green-dk);transform:scale(.93)}
 /* ── Control Panel ── */
 .ctrl-panel{
   width:340px;background:#fff;border-radius:16px;overflow:hidden;
@@ -341,8 +354,9 @@ input[type=file]{display:none}
         <div class="hdr-sub" id="hdrSub">正在線上</div>
       </div>
       <div class="hdr-actions">
+        <button title="搜尋">🔍</button>
         <button title="語音">📞</button>
-        <button title="視訊">📹</button>
+        <button class="hdr-cal" title="行事曆" id="hdrCal">31</button>
         <button title="選單">☰</button>
       </div>
     </div>
@@ -378,10 +392,33 @@ input[type=file]{display:none}
     <div class="input-area">
       <div class="sender-tabs" id="senderTabs"></div>
       <div class="input-row">
+        <button class="ib ib-plus" id="plusBtn" title="更多">+</button>
+        <button class="ib" id="cameraBtn" title="拍照">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+        </button>
+        <button class="ib" id="imgBtn" title="圖片">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+        </button>
+        <textarea class="msg-input" id="msgInput" placeholder="" rows="1"></textarea>
         <button class="ib" id="stickerToggle" title="貼圖">😊</button>
-        <button class="ib" id="imgBtn" title="圖片">🖼️</button>
-        <textarea class="msg-input" id="msgInput" placeholder="Aa" rows="1"></textarea>
-        <button class="send-btn" id="sendBtn">▶</button>
+        <button class="ib ib-mic" id="micBtn" title="語音訊息">
+          <svg width="20" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/>
+            <line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>
+        </button>
+        <button class="send-btn" id="sendBtn" style="display:none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+            <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
+          </svg>
+        </button>
       </div>
     </div>
   </div>
@@ -674,7 +711,22 @@ function init(){
   document.getElementById('msgInput').addEventListener('input',function(){
     this.style.height='auto';
     this.style.height=Math.min(this.scrollHeight,100)+'px';
+    // Toggle send/mic
+    const hasText=this.value.trim().length>0;
+    document.getElementById('sendBtn').style.display=hasText?'flex':'none';
+    document.getElementById('micBtn').style.display=hasText?'none':'flex';
   });
+
+  // Calendar header: show today's date
+  function updateCalDate(){
+    const el=document.getElementById('hdrCal');
+    if(el)el.textContent=new Date().getDate();
+  }
+  updateCalDate(); setInterval(updateCalDate,60000);
+
+  // Camera button (take photo - currently alias to imgInput)
+  const camBtn=document.getElementById('cameraBtn');
+  if(camBtn)camBtn.addEventListener('click',()=>document.getElementById('imgInput').click());
 
   // Add user
   document.getElementById('addUserBtn').addEventListener('click',addUser);
@@ -855,7 +907,11 @@ function sendTextMessage(text, senderId){
   const t=text!==undefined?text:inp.value.trim();
   if(!t)return;
   dispatchMsg({type:'text',text:t},senderId);
-  if(text===undefined){ inp.value=''; inp.style.height='auto'; }
+  if(text===undefined){
+    inp.value=''; inp.style.height='auto';
+    document.getElementById('sendBtn').style.display='none';
+    document.getElementById('micBtn').style.display='flex';
+  }
 }
 
 function dispatchMsg(partial, senderId){
@@ -914,8 +970,8 @@ function addMsgDOM(msg, noAnim=false){
 
   if(msg.isMe){
     row.innerHTML=`
-      <div class="msg-meta">${readHtml}${timeHtml}</div>
       <div class="msg-body">${bub}</div>
+      <div class="msg-meta">${readHtml}${timeHtml}</div>
     `;
   } else {
     row.innerHTML=`

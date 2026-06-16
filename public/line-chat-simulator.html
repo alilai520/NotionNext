@@ -464,8 +464,8 @@ input[type=file]{display:none}
 <button class="fab" id="fab">⚙️</button>
 
 <!-- Mobile Sheet -->
-<div class="sheet-overlay" id="sheetOverlay"></div>
-<div class="sheet" id="sheet">
+<div class="sheet-overlay" id="sheetOverlay">
+<div class="sheet" id="sheet" onclick="event.stopPropagation()">
   <div class="sheet-handle"></div>
   <div class="sheet-tabs">
     <button class="sheet-tab active" data-mtab="m-users">👥 用戶</button>
@@ -519,6 +519,7 @@ input[type=file]{display:none}
       <button class="btn btn-red btn-full" id="mClearBtn">🗑️ 清除所有對話</button>
     </div>
   </div>
+</div>
 </div>
 
 <!-- Hidden inputs -->
